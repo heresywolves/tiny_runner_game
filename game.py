@@ -13,30 +13,34 @@ test_font = pygame.font.Font('font/unlearne.ttf', 50)
 sky_surface = pygame.image.load('graphics/Sky.png').convert()
 ground_surface = pygame.image.load('graphics/Ground.png').convert()
 text_surface = test_font.render('Tiny Runner Pablo', False, 'Black')
+text_rect = text_surface.get_rect(midtop=(400, 50))
 
-snail_surface = pygame.image.load('graphics/enemy/enemy1.png').convert_alpha()
-snail_x_pos = 600
+enemy_surf = pygame.image.load('graphics/enemy/enemy1.png').convert_alpha()
+enemy_rect = enemy_surf.get_rect(bottomleft=(600, 310))
 
 player_surf = pygame.image.load(
     'graphics/player/player_walk1.png').convert_alpha()
+player_rect = player_surf.get_rect(bottomleft=(80, 310))
 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
+        # if event.type == pygame.MOUSEMOTION:
+        #     if player_rect.collidepoint(event.pos):
+        #         print('collision')
 
     screen.blit(sky_surface, (0, 0))
     screen.blit(ground_surface, (0, 280))
-    screen.blit(text_surface, (200, 50))
-    screen
+    screen.blit(text_surface, text_rect)
 
-    snail_x_pos -= 4
-    if snail_x_pos < -35:
-        snail_x_pos = 835
+    enemy_rect.left -= 4
+    if enemy_rect.left < -35:
+        enemy_rect.left = 835
 
-    screen.blit(snail_surface, (snail_x_pos, 240))
-    screen.blilt(player_surf, (80, 240))
+    screen.blit(enemy_surf, enemy_rect)
+    screen.blit(player_surf, player_rect)
 
     # draw all elements
     # update everything

@@ -50,10 +50,13 @@ def butterfly_movement(butterfly_list):
 
 
 def collisions(player, obstacles):
+    global health
     if obstacles:
         for obstacle_rect in obstacles:
-            if player.colliderect(obstacle_rect): return False
-    return True
+            if player.colliderect(obstacle_rect): 
+                obstacles.remove(obstacle_rect)
+                health -= 1
+    return health
     
 def butterfly_collisions(player, butterflies):
     if butterflies:
@@ -135,6 +138,9 @@ player_sit_rect = player_sit_surf.get_rect(center=(400, 200))
 instructions_surf = small_font.render('Press SPACE to start the game', False, ('#C4C4BF'))
 instructions_rect = instructions_surf.get_rect(center=(400, 345))
 
+instructions_details_surf = pygame.image.load('graphics/instructions.png').convert_alpha()
+instructions_details_rect = instructions_details_surf.get_rect(center=(150, 200))
+
 title_surf = test_font.render('Tiny Butterfly Catcher', False, ('#C4C4BF'))
 title_rect = title_surf.get_rect(center=(400, 50))
 
@@ -164,6 +170,7 @@ while True:
                 game_active = True
                 start_time = int(pygame.time.get_ticks() / 100)
                 butterflies_caught = 0
+                health = 3
 
         if event.type == obstacle_timer and game_active:
             if randint(0,2):
@@ -210,6 +217,10 @@ while True:
         # Health
         if health == 3:
             screen.blit(health_3, health_rect)
+        elif health == 2:
+            screen.blit(health_2, health_rect)
+        elif health == 1:
+            screen.blit(health_1, health_rect)
             
 
     else:
@@ -226,6 +237,7 @@ while True:
 
         if score == 0:
             screen.blit(title_surf, title_rect)
+            screen.blit(instructions_details_surf, instructions_details_rect)
         else:
             screen.blit(score_message, score_message_rect)
 

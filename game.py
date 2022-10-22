@@ -102,6 +102,7 @@ ground_surf = pygame.image.load('graphics/Ground.png').convert()
 
 # Butterflies
 butterfly_surf = pygame.image.load('graphics/butterfly/butterfly1.png')
+butterfly_frame_index = 0
 butterfly_rect_list = []
 butterfly_icon_surf = pygame.image.load('graphics/butterfly/butterfly_icon.png')
 butterfly_icon_rect = butterfly_icon_surf.get_rect(midtop=(715, 365))
@@ -118,7 +119,12 @@ health_rect = health_3.get_rect(midtop=(400, 363))
 
 # Obstacles
 enemy_surf = pygame.image.load('graphics/enemy/enemy1.png').convert_alpha()
-enemy2_surf = pygame.image.load('graphics/enemy/enemy2.png').convert_alpha()
+enemy2_frame_1 = pygame.image.load('graphics/enemy/enemy2.png').convert_alpha()
+enemy2_frame_2 = pygame.image.load('graphics/enemy/enemy2_2.png').convert_alpha()
+enemy2_frames = [enemy2_frame_1, enemy2_frame_2]
+enemy2_frame_index = 0
+enemy2_surf = enemy2_frames[enemy2_frame_index]
+
 obstacle_rect_list = []
 
 player_walk_1 = pygame.image.load('graphics/player/player_walk1.png').convert_alpha()
@@ -146,9 +152,13 @@ title_rect = title_surf.get_rect(center=(400, 50))
 
 # Timer
 obstacle_timer = pygame.USEREVENT + 1
-butterfly_timer = pygame.USEREVENT + 1
+butterfly_timer = pygame.USEREVENT + 2
 pygame.time.set_timer(obstacle_timer, 1700)
-pygame.time.set_timer(butterfly_timer, 1700)
+pygame.time.set_timer(butterfly_timer, 1000)
+
+enemy_animation_timer = pygame.USEREVENT + 3
+pygame.time.set_timer(enemy_animation_timer, 200)
+
 
 while True:
     for event in pygame.event.get():
@@ -171,16 +181,22 @@ while True:
                 start_time = int(pygame.time.get_ticks() / 100)
                 butterflies_caught = 0
                 health = 3
+        if game_active:
+            if event.type == obstacle_timer:
+                if randint(0,2):
+                    obstacle_rect_list.append(enemy_surf.get_rect(bottomleft=(randint(900, 1100), 310)))
+                else:
+                    obstacle_rect_list.append(enemy2_surf.get_rect(bottomleft=(randint(900, 1100), 130)))
 
-        if event.type == obstacle_timer and game_active:
-            if randint(0,2):
-                obstacle_rect_list.append(enemy_surf.get_rect(bottomleft=(randint(900, 1100), 310)))
-            else:
-                obstacle_rect_list.append(enemy2_surf.get_rect(bottomleft=(randint(900, 1100), 130)))
-
-        if event.type == butterfly_timer and game_active:
-            butterfly_rect_list.append(butterfly_surf.get_rect(bottomleft=(randint(900, 1300), randint(50, 250))))
+            if event.type == butterfly_timer:
+                butterfly_rect_list.append(butterfly_surf.get_rect(midbottom=(randint(900, 1300), randint(50, 250))))
             
+            if event.type == enemy_animation_timer:
+                if enemy2_frame_index == 0 : enemy2_frame_index = 1
+                else: enemy2_frame_index = 0
+                enemy2_surf = enemy2_frames[enemy2_frame_index]
+        
+        
 
     if game_active:
         # BG movement
